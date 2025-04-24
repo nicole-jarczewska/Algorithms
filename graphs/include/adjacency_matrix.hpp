@@ -25,10 +25,9 @@ public:
     AdjacencyMatrix(int size);
 
     void addEdge(int u, int v, int weight);
-    void removeEdge(int u, int v);
     int getWeight(int u, int v) const;
     void print() const;
-    void graphviz() const;
+    void dumpToGraphviz() const;
     Matrix getMatrix() const;
     void setMatrix(const Matrix& newMatrix);
 

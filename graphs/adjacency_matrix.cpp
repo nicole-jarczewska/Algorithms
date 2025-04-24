@@ -6,10 +6,10 @@
 #include <vector>
 #include <optional>
 
-#include "adjacency_matrix.hpp"
+#include "include/adjacency_matrix.hpp"
 
 
-Matrix::Matrix(int s) : size(s), data(s * s, 0) {}
+Matrix::Matrix(int size) : size(size), data(size * size, 0) {}
 
 void Matrix::set(int row, int col, int value) {
     data[row * size + col] = value;
@@ -45,14 +45,6 @@ void AdjacencyMatrix::addEdge(int u, int v, int weight) {
     }
 }
 
-void AdjacencyMatrix::removeEdge(int u, int v) {
-    matrix.set(u, v, 0);
-
-    edges.erase(std::remove_if(edges.begin(), edges.end(), [&](const Edge& e) {
-        return e.start == u && e.end == v;
-    }), edges.end());
-}
-
 int AdjacencyMatrix::getWeight(int u, int v) const {
     return matrix.get(u, v);
 }
@@ -62,10 +54,10 @@ void AdjacencyMatrix::print() const {
     matrix.print();
 }
 
-void AdjacencyMatrix::graphviz() const {
+void AdjacencyMatrix::dumpToGraphviz() const {
     std::cout << "\ndigraph G {\n";
     for (const auto& e : edges) {
-        std::cout << e.start << " -> " << e.end << " [weight=" << e.weight << "]\n";
+        std::cout << e.start << " -> " << e.end << " [label=" << e.weight << "]\n";
     }
     std::cout << "}\n";
 }
