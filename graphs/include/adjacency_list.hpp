@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 class AdjacencyList {
 public:
     AdjacencyList(int vertices) : Vertices(vertices) {}

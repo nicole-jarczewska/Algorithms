@@ -1,13 +1,4 @@
-﻿#include <stdlib.h>
-#include <cstdlib>
-#include <algorithm>
-#include <iostream>
-#include <filesystem>
-#include <vector>
-#include <optional>
-
-#include "include/adjacency_matrix.hpp"
-
+﻿#include "include/adjacency_matrix.hpp"
 
 Matrix::Matrix(int size) : size(size), data(size * size, 0) {}
 

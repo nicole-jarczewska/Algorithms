@@ -1,17 +1,7 @@
-﻿#include <stdlib.h>
-#include <cstdlib>
-#include <algorithm>
-#include <iostream>
-#include <filesystem>
-#include <fstream>
-#include <vector>
-#include <optional>
-
-#include "include/dfs.hpp"
+﻿#include "include/dfs.hpp"
 
 void dfs_matrix(const AdjacencyMatrix& graph, int start, std::vector<bool>& visited, int size) {
     visited[start] = true;
-    std::cout << start << " ";
 
     Matrix matrix = graph.getMatrix();
 
@@ -24,7 +14,6 @@ void dfs_matrix(const AdjacencyMatrix& graph, int start, std::vector<bool>& visi
 
 void dfs_list(const AdjacencyList& graph, int start, std::vector<bool>& visited) {
     visited[start] = true;
-    std::cout << start << " ";
 
     const std::vector<Edge>* adjacency = graph.getList();
 

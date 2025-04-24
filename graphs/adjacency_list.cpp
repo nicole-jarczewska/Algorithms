@@ -1,14 +1,4 @@
-﻿#include <stdlib.h>
-#include <cstdlib>
-#include <algorithm>
-#include <iostream>
-#include <filesystem>
-#include <vector>
-#include <optional>
-#include <fstream>
-#include <bits/stdc++.h>
-
-#include "include/adjacency_list.hpp"
+﻿#include "include/adjacency_list.hpp"
 
 void AdjacencyList::addEdge(int start, int end, int weight) {
     Edge edge = {weight, start, end};

@@ -1,19 +1,4 @@
-#include "algorythms/include/heapsort.hpp"
-#include "algorythms/include/insertionsort.hpp"
-#include "algorythms/include/introsort.hpp"
-#include "algorythms/include/quicksort.hpp"
-#include "algorythms/include/timsort.hpp"
-
-#include "timings_test.hpp"
-
-#include <chrono>
-#include <cstdlib>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <experimental/filesystem>
+#include "include/timer.hpp"
 
 class Timer
 {
@@ -52,20 +37,3 @@ class TimingsCollector {
     Timings timings;
 };
 
-void measure_sorting_timings(const int* original_tab, int size, void (*sort_function)(int*, int), const std::filesystem::path& output_csv)
-{
-    Timer timer;
-    TimingsCollector timingsCollector;
-    const int repeats = 100; // Sorting repeated 100 times for accuracy
-
-    for (int i = 0; i < repeats; ++i) {
-        std::vector<int> temp_tab(original_tab, original_tab + size); // Copy array before sorting
-        timer.start();
-        sort_function(temp_tab.data(), size);
-        timer.stop();
-        timingsCollector.add_timing(size, timer.nanoseconds());
-    }
-
-    if (!timingsCollector.save_file(output_csv))
-        std::cerr << "Error saving timings to " << output_csv << std::endl;
-}
