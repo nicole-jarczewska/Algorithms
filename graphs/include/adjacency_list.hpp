@@ -12,5 +12,5 @@ public:
 
 private:
     int Vertices;
-    std::vector<Edge> adj[100];
+    std::vector<Edge> edges[100];
 };

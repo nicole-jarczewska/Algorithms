@@ -8,6 +8,7 @@
 #include <optional>
 #include <ctime>
 #include <chrono>
+#include <queue>
 
 #include "timer.cpp"
 #include "include/timer.hpp"
@@ -19,6 +20,8 @@
 
 #include "dfs.cpp"
 #include "include/dfs.hpp"
+#include "dijkstry.cpp"
+#include "include/dijkstry.hpp"
 
 
 AdjacencyMatrix load_matrix(int size, float density){
@@ -63,13 +66,52 @@ void measure_time_matrix(int size, float density, const std::filesystem::path& o
         AdjacencyMatrix graph = load_matrix(size, density);
         timer.start();
         std::vector<bool> visited(size, false);
-        dfs_matrix(graph, 0, visited, size);
+        //dfs_matrix(graph, 0, visited, size);
+        dijkstra_matrix(graph, 0, visited, size);
         timer.stop();
         timingsCollector.add_timing(timer.nanoseconds());
+
     }
 
     if (!timingsCollector.save_file(output_csv))
         std::cerr << "Error saving timings to " << output_csv << std::endl;
+
+        AdjacencyMatrix graph = load_matrix(size, density);
+        std::vector<bool> visited(size, false);
+        auto dist = dijkstra_matrix(graph, 0, visited, size);
+        for (int i = 0; i < dist.size(); ++i)
+            std::cout << "Distance from 0 to " << i << " is " << dist[i] << "\n";
+
+        graph.dumpToGraphviz();
+}
+
+void measure_time_list(int size, float density, const std::filesystem::path& output_csv)
+{
+    Timer timer;
+    TimingsCollector timingsCollector;
+    const int repeats = 100;
+
+    for (int i = 0; i < repeats; ++i) {
+        AdjacencyList graph = load_list(size, density);
+        timer.start();
+        std::vector<bool> visited(size, false);
+        //dfs_matrix(graph, 0, visited, size);
+        dijkstra_list(graph, 0, visited, size);
+        timer.stop();
+        timingsCollector.add_timing(timer.nanoseconds());
+
+    }
+
+    if (!timingsCollector.save_file(output_csv))
+        std::cerr << "Error saving timings to " << output_csv << std::endl;
+
+        AdjacencyList graph = load_list(size, density);
+        std::vector<bool> visited(size, false);
+        auto dist = dijkstra_list(graph, 0, visited, size);
+        for (int i = 0; i < dist.size(); ++i)
+            std::cout << "Distance from 0 to " << i << " is " << dist[i] << "\n";
+
+        graph.dumpToGraphviz();
 }
 
 int main() {
@@ -84,7 +126,7 @@ int main() {
         for(float density : DENSITIES){
             std::ostringstream filename;
             filename << size << "_" << std::fixed << std::setprecision(2) << density << ".csv";
-            measure_time_matrix(size, density, std::filesystem::path("results/matrix_" + filename.str()));    
+            measure_time_list(size, density, std::filesystem::path("results/matrix_" + filename.str()));
     }
 
     // std::vector<bool> visited(size, false);
