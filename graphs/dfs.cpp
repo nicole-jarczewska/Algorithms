@@ -1,25 +1,31 @@
 ﻿#include "include/dfs.hpp"
 
-void dfs_matrix(const AdjacencyMatrix& graph, int start, std::vector<bool>& visited, int size) {
+std::vector<int> dfs_matrix(const AdjacencyMatrix& graph, std::vector<int>& results, int start, std::vector<bool>& visited, int size) {
     visited[start] = true;
+    results.push_back(start);
 
     Matrix matrix = graph.getMatrix();
 
     for (int i = 0; i < size; ++i) {
         if (matrix.get(start, i) != 0 && !visited[i]) {
-            dfs_matrix(graph, i, visited, size);
+            dfs_matrix(graph, results, i, visited, size);
         }
     }
+
+    return results;
 }
 
-void dfs_list(const AdjacencyList& graph, int start, std::vector<bool>& visited) {
+std::vector<int> dfs_list(const AdjacencyList& graph, std::vector<int>& results, int start, std::vector<bool>& visited, int size) {
     visited[start] = true;
+    results.push_back(start);
 
     const std::vector<Edge>* adjacency = graph.getList();
 
     for (const Edge& edge : adjacency[start]) {
         if (!visited[edge.end]) {
-            dfs_list(graph, edge.end, visited);
+            dfs_list(graph, results, edge.end, visited, size);
         }
     }
+
+    return results;
 }

@@ -36,4 +36,3 @@ class TimingsCollector {
   private:
     Timings timings;
 };
-
