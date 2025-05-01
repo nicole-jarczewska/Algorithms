@@ -6,6 +6,7 @@ public:
     
     void addEdge(int start, int end, int weight);
     const std::vector<Edge>* getList() const;
+    AdjacencyList makeGraph(int size, float density);
     void print();
     void dumpToGraphviz() const;
 

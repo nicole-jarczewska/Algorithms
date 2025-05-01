@@ -26,6 +26,7 @@ public:
     void dumpToGraphviz() const;
     Matrix getMatrix() const;
     void setMatrix(const Matrix& newMatrix);
+    AdjacencyMatrix makeGraph(int size, float density);
 
 private:
     int size;
