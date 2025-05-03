@@ -1,6 +1,6 @@
 ﻿#include "include/dfs.hpp"
 
-std::vector<int> dfs_matrix(const AdjacencyMatrix& graph, std::vector<int>& results, int start, std::vector<bool>& visited, int size) {
+std::vector<int> dfs_matrix(const AdjacencyMatrix& graph, std::vector<int>& results, int start, std::vector<bool>& visited, int size, bool testFlag) {
     visited[start] = true;
     results.push_back(start);
 
@@ -8,22 +8,24 @@ std::vector<int> dfs_matrix(const AdjacencyMatrix& graph, std::vector<int>& resu
 
     for (int i = 0; i < size; ++i) {
         if (matrix.get(start, i) != 0 && !visited[i]) {
-            dfs_matrix(graph, results, i, visited, size);
+            dfs_matrix(graph, results, i, visited, size, testFlag);
         }
     }
 
     return results;
 }
 
-std::vector<int> dfs_list(const AdjacencyList& graph, std::vector<int>& results, int start, std::vector<bool>& visited, int size) {
+std::vector<int> dfs_list(const AdjacencyList& graph, std::vector<int>& results, int start, std::vector<bool>& visited, int size, bool testFlag) {
     visited[start] = true;
     results.push_back(start);
 
-    const std::vector<Edge>* adjacency = graph.getList();
+    Edge** adjacency = graph.getList();
 
-    for (const Edge& edge : adjacency[start]) {
+    int edgeCount = graph.getSize(start);
+    for (int i = 0; i < edgeCount; ++i) {
+        const Edge& edge = adjacency[start][i];
         if (!visited[edge.end]) {
-            dfs_list(graph, results, edge.end, visited, size);
+            dfs_list(graph, results, edge.end, visited, size, testFlag);
         }
     }
 

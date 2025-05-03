@@ -50,7 +50,7 @@ void AdjacencyMatrix::dumpToGraphviz() const {
     for (const auto& e : edges) {
         std::cout << e.start << " -> " << e.end << " [label=" << e.weight << "]\n";
     }
-    std::cout << "}\n";
+    // std::cout << "}\n";
 }
 
 Matrix AdjacencyMatrix::getMatrix() const {
@@ -61,9 +61,10 @@ void AdjacencyMatrix::setMatrix(const Matrix& newMatrix) {
     matrix = newMatrix;
 }
 
-AdjacencyMatrix AdjacencyMatrix::makeGraph(int size, float density){
+AdjacencyMatrix AdjacencyMatrix::makeGraph(int size, float density, bool flag) {
     AdjacencyMatrix graph(size);
     int max_edges = (size * (size - 1) / 2) * density;
+    int weight;
 
     std::vector<int> nodes;
 
@@ -79,9 +80,9 @@ AdjacencyMatrix AdjacencyMatrix::makeGraph(int size, float density){
     for (int i = 0; i < size-1; ++i) {
         int u = nodes[i];
         int v = nodes[i + 1];
-        int weight = rand() % 10 + 1;
+        if(flag==true) weight = (rand() % 21) - 10;
+        else weight = (rand() % 10) + 1;
         graph.addEdge(u, v, weight);
-
     }
 
     for (int edges = 0; edges < max_edges-size+1; edges++) {
@@ -90,7 +91,9 @@ AdjacencyMatrix AdjacencyMatrix::makeGraph(int size, float density){
                 u = rand() % size;
                 v = rand() % size;
             } while (u == v);
-        graph.addEdge(u, v, rand() % 10 + 1);
+        if(flag==true) weight = (rand() % 21) - 10;
+        else weight = (rand() % 10) + 1;
+        graph.addEdge(u, v, weight);
     }
 
     return graph;
