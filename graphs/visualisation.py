@@ -1,137 +1,96 @@
 import csv
-import numpy as np
+import os
 import matplotlib.pyplot as plt
 
-matrix_results_size = {
-    "dfs": [],
-    "dijkstry": [],
-    "bellman_ford": []
-}
-
-list_results_size = {
-    "dfs": [],
-    "dijkstry": [],
-    "bellman_ford": []
-}
-
-matrix_results_density = {
-    "dfs": [],
-    "dijkstry": [],
-    "bellman_ford": []
-}
-
-list_results_density = {
-    "dfs": [],
-    "dijkstry": [],
-    "bellman_ford": []
-}
-
-OPERATIONS = list(matrix_results_size.keys())
-
+ALGORYTHM = ["dfs", "dijkstry", "bellman_ford"]
 SIZES = [10, 50, 100, 200, 500]
-DENSITIES = [0.25, 0.50, 0.75, 1.0] 
-
-SIZE = 200
-DENSITY = 0.50
-
-for operation in OPERATIONS:
-    for size in SIZES:
-            total_time = 0
-            filename = f"results/{operation}_matrix_{size}_{DENSITY:.2f}.csv"
-
-            with open(filename) as csvfile:
-                reader = csv.reader(csvfile)
-
-                for row in reader:
-                    if row: 
-                        total_time += float(row[0])
-
-            mean_time = total_time / 100 /1000000
-            matrix_results_size[operation].append(mean_time)
-
-for operation in OPERATIONS:
-    for density in DENSITIES:
-            total_time = 0
-            filename = f"results/{operation}_matrix_{SIZE}_{density:.2f}.csv"
-
-            with open(filename) as csvfile:
-                reader = csv.reader(csvfile)
-
-                for row in reader:
-                    if row: 
-                        total_time += float(row[0])
-
-            mean_time = total_time / 100 /1000000
-            matrix_results_density[operation].append(mean_time)
-
-for operation in OPERATIONS:
-    for size in SIZES:
-            total_time = 0
-            filename = f"results/{operation}_list_{size}_{density:.2f}.csv"
-
-            with open(filename) as csvfile:
-                reader = csv.reader(csvfile)
-
-                for row in reader:
-                    if row: 
-                        total_time += float(row[0])
-
-            mean_time = total_time / 100 /1000000
-            list_results_size[operation].append(mean_time)
-
-for operation in OPERATIONS:
-    for density in DENSITIES:
-            total_time = 0
-            filename = f"results/{operation}_list_{SIZE}_{density:.2f}.csv"
-
-            with open(filename) as csvfile:
-                reader = csv.reader(csvfile)
-
-                for row in reader:
-                    if row: 
-                        total_time += float(row[0])
-
-            mean_time = total_time / 100 /1000000
-            list_results_density[operation].append(mean_time)
-
+DENSITIES = [0.25, 0.50, 0.75, 1.0]
+FIXED_SIZE = 100
+FIXED_DENSITY = 1.0
 
 TITLES = {
-    "dfs": "algorytmu DFS",
-    "dijkstry": "algorytmu Dijkstry",
-    "bellman_ford": "algorytmu Bellmana-Forda",
-    }
+    "dfs": "Algorytm DFS",
+    "dijkstry": "Algorytm Dijkstry",
+    "bellman_ford": "Algorytm Bellmana-Forda",
+}
 
-def plot_comparison_for_operation(matrix_results, list_results, operation, PARAMETERS):
+os.makedirs("plots", exist_ok=True)
+
+# Store results
+matrix_size = {op: [] for op in ALGORYTHM}
+list_size = {op: [] for op in ALGORYTHM}
+matrix_density = {op: [] for op in ALGORYTHM}
+list_density = {op: [] for op in ALGORYTHM}
+
+def read_mean_time(filepath):
+    try:
+        total_time = 0
+        with open(filepath) as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if row:
+                    total_time += float(row[0])
+        return total_time / 100 / 1_000_000 
+    except FileNotFoundError:
+        print(f"[Missing] {filepath}")
+        return 0
+
+# --- Load data ---
+for op in ALGORYTHM:
+    for size in SIZES:
+        matrix_file = f"results/{op}_matrix_{size}_{FIXED_DENSITY:.2f}.csv"
+        list_file = f"results/{op}_list_{size}_{FIXED_DENSITY:.2f}.csv"
+        matrix_size[op].append(read_mean_time(matrix_file))
+        list_size[op].append(read_mean_time(list_file))
+
+    for density in DENSITIES:
+        matrix_file = f"results/{op}_matrix_{FIXED_SIZE}_{density:.2f}.csv"
+        list_file = f"results/{op}_list_{FIXED_SIZE}_{density:.2f}.csv"
+        matrix_density[op].append(read_mean_time(matrix_file))
+        list_density[op].append(read_mean_time(list_file))
+
+def plot_structure_comparison(x_vals, y_matrix, y_list, op, x_label, title_suffix, file_suffix):
+    plt.figure(figsize=(10, 6))
+    plt.plot(x_vals, y_matrix, label="Macierz sąsiedztwa", marker='o', color="#fc0356")
+    plt.plot(x_vals, y_list, label="Lista sąsiedztwa", marker='o', color="#0318fc")
+    plt.title(f"{TITLES[op]} – {title_suffix}")
+    plt.xlabel(x_label)
+    plt.ylabel("Średni czas wykonania [ms]")
+    plt.grid(True, linestyle="--", linewidth=0.5)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(f"plots/{op}_{file_suffix}.png")
+    plt.close()
+
+for op in ALGORYTHM:
+    plot_structure_comparison(SIZES, matrix_size[op], list_size[op], op,
+                              "Rozmiar grafu", f"dla grafu o gęstości {int(FIXED_DENSITY*100)}%", "size")
+    
+    plot_structure_comparison(DENSITIES, matrix_density[op], list_density[op], op,
+                              "Gęstość grafu", f"dla grafu o {FIXED_SIZE} wierzchołkach", "density")
+
+
+def plot_densities_by_structure(structure_type, op):
     plt.figure(figsize=(10, 6))
 
-    matrix_times = matrix_results.get(operation, [])
-    list_times = list_results.get(operation, [])
-    
+    for density in DENSITIES:
+        times = []
+        for size in SIZES:
+            filename = f"results/{op}_{structure_type}_{size}_{density:.2f}.csv"
+            times.append(read_mean_time(filename))
+        
+        plt.plot(SIZES, times, marker='o', label=f"Gęstość {int(density*100)}%")
 
-    if not matrix_times or not list_times:
-        return  
-    
-    plt.plot(PARAMETERS, matrix_times, label=f'Macierz sąsiedztwa', marker='o', color='#fc0356')
-    
-    plt.plot(PARAMETERS, list_times, label=f'Lista sąsiedztwa', marker='o', color='#0318fc')
-    
-
-    title = TITLES.get(operation, operation)
-
-    plt.title(f'Porównanie {title}')
-    plt.xlabel('Rozmiar grafu')
-    plt.ylabel('Średni czas wykonania [ms]')
-    #plt.xscale("log")
-    plt.grid(True, which="both", linestyle="--", linewidth=0.5)
-
+    title = f"{TITLES[op]} – {('dla macierzy sąsiedztwa' if structure_type == 'matrix' else 'dla listy sąsiedztwa')}"
+    plt.title(title)
+    plt.xlabel("Rozmiar grafu")
+    plt.ylabel("Średni czas wykonania [ms]")
+    plt.grid(True, linestyle="--", linewidth=0.5)
     plt.legend()
-    plt.grid(True)
-    
-    plt.show()
+    plt.tight_layout()
+    plt.savefig(f"plots/{op}_{structure_type}_densities.png")
+    plt.close()
 
-
-for operation in OPERATIONS:
-    plot_comparison_for_operation(matrix_results_size, list_results_size, operation, SIZES)
-
-for operation in OPERATIONS:
-    plot_comparison_for_operation(matrix_results_density, list_results_density, operation, DENSITIES)
+for op in ALGORYTHM:
+    plot_densities_by_structure("matrix", op)
+    plot_densities_by_structure("list", op)

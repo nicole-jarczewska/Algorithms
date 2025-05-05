@@ -111,8 +111,10 @@ AdjacencyList AdjacencyList::makeGraph(int size, float density, bool flag) {
     for (int i = 0; i < size - 1; ++i) {
         int u = nodes[i];
         int v = nodes[i + 1];
+        do{
         if (flag) weight = (rand() % 21) - 10;
-        else weight = (rand() % 10) + 1;   
+        else weight = (rand() % 10) + 1;
+        }while(weight==0);
         graph.addEdge(u, v, weight);
     }
 
@@ -122,8 +124,10 @@ AdjacencyList AdjacencyList::makeGraph(int size, float density, bool flag) {
             u = rand() % size;
             v = rand() % size;
         } while (u == v); 
-        if (flag) weight = (rand() % 21) - 10;
-        else weight = (rand() % 10) + 1;
+        do{
+            if (flag) weight = (rand() % 21) - 10;
+            else weight = (rand() % 10) + 1;
+            }while(weight==0);
         graph.addEdge(u, v, weight);
     }
 

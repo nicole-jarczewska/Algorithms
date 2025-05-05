@@ -80,19 +80,23 @@ AdjacencyMatrix AdjacencyMatrix::makeGraph(int size, float density, bool flag) {
     for (int i = 0; i < size-1; ++i) {
         int u = nodes[i];
         int v = nodes[i + 1];
-        if(flag==true) weight = (rand() % 21) - 10;
-        else weight = (rand() % 10) + 1;
+        do{
+            if (flag) weight = (rand() % 21) - 10;
+            else weight = (rand() % 10) + 1;
+        }while(weight==0);
         graph.addEdge(u, v, weight);
     }
 
-    for (int edges = 0; edges < max_edges-size+1; edges++) {
+    for (int edges = 0; edges < max_edges+1-size; edges++) {
         int u, v;
             do {
                 u = rand() % size;
                 v = rand() % size;
             } while (u == v);
-        if(flag==true) weight = (rand() % 21) - 10;
-        else weight = (rand() % 10) + 1;
+            do{
+                if (flag) weight = (rand() % 21) - 10;
+                else weight = (rand() % 10) + 1;
+            }while(weight==0);
         graph.addEdge(u, v, weight);
     }
 

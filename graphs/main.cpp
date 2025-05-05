@@ -125,7 +125,7 @@ void test_list(int size, float density, std::vector<int>
 int main() {
     srand(static_cast<unsigned int>(time(0)));
 
-    int SIZES[] = {10, 50, 100, 200, 500};
+    int SIZES[] = {10, 50, 100, 200, 500}; 
     float DENSITIES[] = {0.25, 0.50, 0.75, 1.0};
 
     for (int size : SIZES){

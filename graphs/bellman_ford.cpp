@@ -1,18 +1,5 @@
 ﻿#include "include/bellman_ford.hpp"
 
-
-void DumpToGraphviz2(int end, const std::vector<int>& path) {
-    std::vector<int> result_path;
-    for (int at = end; at != -1; at = path[at])
-        result_path.push_back(at);
-    std::reverse(result_path.begin(), result_path.end());
-
-    for (size_t i = 0; i + 1 < result_path.size(); ++i) {
-        std::cout << result_path[i] << " -> " << result_path[i + 1] << " [color=red];\n";
-    }
-    //std::cout << "}\n";
-}
-
 std::vector<int> bellman_ford_matrix(const AdjacencyMatrix& graph, std::vector<int>& results, int start, std::vector<bool>& visited, int size, bool testFlag) {
     int max = 2147483647;
     std::vector<int> shortest_path(size, max);
@@ -81,7 +68,7 @@ std::vector<int> bellman_ford_list(const AdjacencyList& graph, std::vector<int>&
     }
 
     if (testFlag) {
-        DumpToGraphviz2(size - 1, path);
+        DumpToGraphviz(size - 1, path);
     }
 
     return shortest_path;
